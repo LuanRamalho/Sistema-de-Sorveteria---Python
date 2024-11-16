@@ -4,14 +4,17 @@ from PIL import Image, ImageTk
 
 # Preços dos produtos
 precos = {
-    "acai": 8.00,
+    "açai": 8.00,
     "casquinha": 2.00,
+    "churros": 1.50,
+    "sorvete": 7.00,
     "pote": 5.00,
     "milkshake": 7.00,
     "cupcake": 1.50,
-    "picole": 1.50,
+    "picolé": 1.50,
     "brownie": 1.50,
-    "refresco": 1.00
+    "refresco": 1.00,
+    "Suco": 1.50
 }
 
 # Função para calcular o total
@@ -38,9 +41,25 @@ def calcular_troco():
 
 # Configuração da janela principal
 root = tk.Tk()
-root.title("Sorveteria")
+root.title("Sistema de Sorveteria")
 root.geometry("600x700")
 root.configure(bg="#eaf4fc")
+
+# Criação de um frame rolável
+canvas = tk.Canvas(root, bg="#eaf4fc")
+scrollbar = tk.Scrollbar(root, orient="vertical", command=canvas.yview)
+scrollable_frame = tk.Frame(canvas, bg="#eaf4fc")
+
+scrollable_frame.bind(
+    "<Configure>",
+    lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+)
+
+canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+canvas.configure(yscrollcommand=scrollbar.set)
+
+canvas.pack(side="left", fill="both", expand=True)
+scrollbar.pack(side="right", fill="y")
 
 # Variáveis de interface
 quantidade_vars = {item: tk.StringVar(value="0") for item in precos}
@@ -49,11 +68,11 @@ valor_pago_var = tk.StringVar(value="0")
 troco_var = tk.StringVar(value="R$0.00")
 
 # Título
-titulo = tk.Label(root, text="Sorveteria Delícias Geladas", font=("Helvetica", 24, "bold"), bg="#eaf4fc", fg="#007bff")
+titulo = tk.Label(scrollable_frame, text="Sistema de Sorveteria", font=("Helvetica", 24, "bold"), bg="#eaf4fc", fg="#007bff")
 titulo.pack(pady=15)
 
 # Formulário de produtos
-form_frame = tk.Frame(root, bg="#eaf4fc")
+form_frame = tk.Frame(scrollable_frame, bg="#eaf4fc")
 form_frame.pack(pady=15)
 
 for item, preco in precos.items():
@@ -63,17 +82,17 @@ for item, preco in precos.items():
     item_entry.grid(row=list(precos.keys()).index(item), column=1, padx=10)
 
 # Botão para calcular o total
-calcular_button = tk.Button(root, text="Calcular Total", font=("Helvetica", 12, "bold"), bg="#007bff", fg="white", command=calcular_total, relief="solid", bd=1)
+calcular_button = tk.Button(scrollable_frame, text="Calcular Total", font=("Helvetica", 12, "bold"), bg="#007bff", fg="white", command=calcular_total, relief="solid", bd=1)
 calcular_button.pack(pady=15)
 
 # Resultado do total
-total_label = tk.Label(root, text="Total:", font=("Helvetica", 14, "bold"), bg="#eaf4fc", fg="#000")
+total_label = tk.Label(scrollable_frame, text="Total:", font=("Helvetica", 14, "bold"), bg="#eaf4fc", fg="#000")
 total_label.pack()
-total_display = tk.Label(root, textvariable=total_var, font=("Helvetica", 14), bg="#eaf4fc", fg="#28a745")
+total_display = tk.Label(scrollable_frame, textvariable=total_var, font=("Helvetica", 14), bg="#eaf4fc", fg="#28a745")
 total_display.pack()
 
 # Seção de pagamento e troco
-troco_frame = tk.Frame(root, bg="#eaf4fc")
+troco_frame = tk.Frame(scrollable_frame, bg="#eaf4fc")
 troco_frame.pack(pady=20)
 
 valor_pago_label = tk.Label(troco_frame, text="Valor Pago:", font=("Helvetica", 12, "bold"), bg="#eaf4fc", fg="#0d6efd")
@@ -82,13 +101,13 @@ valor_pago_entry = tk.Entry(troco_frame, textvariable=valor_pago_var, font=("Hel
 valor_pago_entry.grid(row=0, column=1, padx=10)
 
 # Botão para calcular o troco
-troco_button = tk.Button(root, text="Calcular Troco", font=("Helvetica", 12, "bold"), bg="#007bff", fg="white", command=calcular_troco, relief="solid", bd=1)
+troco_button = tk.Button(scrollable_frame, text="Calcular Troco", font=("Helvetica", 12, "bold"), bg="#007bff", fg="white", command=calcular_troco, relief="solid", bd=1)
 troco_button.pack(pady=15)
 
 # Resultado do troco
-troco_label = tk.Label(root, text="Troco:", font=("Helvetica", 14, "bold"), bg="#eaf4fc", fg="#000")
+troco_label = tk.Label(scrollable_frame, text="Troco:", font=("Helvetica", 14, "bold"), bg="#eaf4fc", fg="#000")
 troco_label.pack()
-troco_display = tk.Label(root, textvariable=troco_var, font=("Helvetica", 14), bg="#eaf4fc", fg="#28a745")
+troco_display = tk.Label(scrollable_frame, textvariable=troco_var, font=("Helvetica", 14), bg="#eaf4fc", fg="#28a745")
 troco_display.pack()
 
 # Executando a aplicação
